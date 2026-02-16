@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Trash2 } from 'lucide-react';
+import { Check, Trash2, Clock } from 'lucide-react';
 
 // Pastel background colors for todo cards (amber/warm palette)
 const CARD_COLORS = [
@@ -64,8 +64,8 @@ export default function TodoItem({ todo, onToggle, onDelete, index = 0 }) {
                     <div className="flex-1 min-w-0">
                         <p
                             className={`text-sm font-semibold leading-snug transition-colors ${todo.is_completed
-                                    ? 'text-stone-400 line-through'
-                                    : 'text-stone-700'
+                                ? 'text-stone-400 line-through'
+                                : 'text-stone-700'
                                 }`}
                         >
                             {todo.title}
@@ -78,14 +78,21 @@ export default function TodoItem({ todo, onToggle, onDelete, index = 0 }) {
                                 {todo.description}
                             </p>
                         )}
+                        {todo.time && (
+                            <div className={`flex items-center gap-1 text-xs mt-1 ${todo.is_completed ? 'text-stone-300' : 'text-amber-500 font-medium'
+                                }`}>
+                                <Clock size={12} />
+                                <span>{todo.time.slice(0, 5)}</span>
+                            </div>
+                        )}
                     </div>
 
                     {/* Checkbox */}
                     <button
                         onClick={() => onToggle(todo.id, todo.is_completed)}
                         className={`flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${todo.is_completed
-                                ? 'bg-emerald-400 border-emerald-400'
-                                : 'border-stone-300 hover:border-amber-400 bg-white'
+                            ? 'bg-emerald-400 border-emerald-400'
+                            : 'border-stone-300 hover:border-amber-400 bg-white'
                             }`}
                     >
                         <AnimatePresence>

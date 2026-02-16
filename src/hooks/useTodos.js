@@ -26,7 +26,7 @@ export function useTodos() {
         fetchTodos();
     }, [fetchTodos]);
 
-    const addTodo = async (title, description, date) => {
+    const addTodo = async (title, description, date, time) => {
         const { data, error } = await supabase
             .from('todos')
             .insert({
@@ -34,6 +34,7 @@ export function useTodos() {
                 title,
                 description: description || null,
                 date,
+                time: time || null,
                 is_completed: false,
             })
             .select()

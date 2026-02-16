@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CalendarDays } from 'lucide-react';
+import { X, CalendarDays, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AddTodoModal({ isOpen, onClose, onAdd }) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+    const [time, setTime] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -25,10 +26,11 @@ export default function AddTodoModal({ isOpen, onClose, onAdd }) {
         setError('');
 
         try {
-            await onAdd(title.trim(), description.trim(), date);
+            await onAdd(title.trim(), description.trim(), date, time);
             setTitle('');
             setDescription('');
             setDate(format(new Date(), 'yyyy-MM-dd'));
+            setTime('');
             onClose();
         } catch (err) {
             setError(err.message);
@@ -127,6 +129,21 @@ export default function AddTodoModal({ isOpen, onClose, onAdd }) {
                                             type="date"
                                             value={date}
                                             onChange={(e) => setDate(e.target.value)}
+                                            className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50 text-stone-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent transition appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">
+                                        Time <span className="text-stone-300 font-normal normal-case">(Optional)</span>
+                                    </label>
+                                    <div className="relative">
+                                        <Clock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
+                                        <input
+                                            type="time"
+                                            value={time}
+                                            onChange={(e) => setTime(e.target.value)}
                                             className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50 text-stone-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent transition appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                                         />
                                     </div>
