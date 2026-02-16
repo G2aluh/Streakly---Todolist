@@ -26,7 +26,7 @@ export default function NotificationManager() {
                     if (todoTimeShort === currentTime && !notifiedRef.current.has(todo.id)) {
                         new Notification('Streakly Reminder 🔔', {
                             body: `It's time for: ${todo.title}`,
-                            icon: '/Streakly.png'
+                            icon: '/Streakly02.png'
                         });
                         notifiedRef.current.add(todo.id);
                     }

@@ -18,12 +18,12 @@ export default defineConfig({
         theme_color: '#ffffff',
         icons: [
           {
-            src: '/Streakly.png',
+            src: '/Streakly02.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/Streakly.png',
+            src: '/Streakly02.png',
             sizes: '512x512',
             type: 'image/png'
           }
