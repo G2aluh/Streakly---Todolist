@@ -36,9 +36,18 @@ export default function TodoItem({ todo, onToggle, onDelete, index = 0 }) {
         setTimeout(() => onDelete(todo.id), 300);
     };
 
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    const currentTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+    const isOverdue = !todo.is_completed && (
+        todo.date < todayStr ||
+        (todo.date === todayStr && todo.time && todo.time.slice(0, 5) < currentTime)
+    );
+
     const colorClass = todo.is_completed
         ? 'bg-stone-50 border-stone-100'
-        : getCardColor(index);
+        : (isOverdue ? 'bg-red-50 border-red-100' : getCardColor(index));
     const emoji = getCardEmoji(todo.title);
 
     return (
@@ -79,7 +88,9 @@ export default function TodoItem({ todo, onToggle, onDelete, index = 0 }) {
                             </p>
                         )}
                         {todo.time && (
-                            <div className={`flex items-center gap-1 text-xs mt-1 ${todo.is_completed ? 'text-stone-300' : 'text-amber-500 font-medium'
+                            <div className={`flex items-center gap-1 text-xs mt-1 ${todo.is_completed
+                                ? 'text-stone-300'
+                                : (isOverdue ? 'text-red-500 font-bold' : 'text-amber-500 font-medium')
                                 }`}>
                                 <Clock size={12} />
                                 <span>{todo.time.slice(0, 5)}</span>

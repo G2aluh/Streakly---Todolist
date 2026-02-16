@@ -19,26 +19,47 @@ export default function NotificationManager() {
             const currentTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
             const todayStr = now.toISOString().split('T')[0];
 
+            let overdueCount = 0;
+
             todos.forEach(todo => {
-                if (todo.date === todayStr && todo.time && !todo.is_completed) {
-                    const todoTimeShort = todo.time.slice(0, 5); // HH:MM
+                if (!todo.is_completed) {
+                    // Check if overdue
+                    const isOverdue = todo.date < todayStr || (todo.date === todayStr && todo.time && todo.time.slice(0, 5) < currentTime);
+                    if (isOverdue) overdueCount++;
 
-                    if (todoTimeShort === currentTime && !notifiedRef.current.has(todo.id)) {
-                        // Always show in-app toast
-                        addToast(`It's time for: ${todo.title}`, 'info');
+                    // Notification logic
+                    if (todo.date === todayStr && todo.time) {
+                        const todoTimeShort = todo.time.slice(0, 5); // HH:MM
 
-                        // Show system notification if allowed
-                        if (Notification.permission === 'granted') {
-                            new Notification('Streakly Reminder 🔔', {
-                                body: `It's time for: ${todo.title}`,
-                                icon: '/Streakly02.png'
-                            });
+                        if (todoTimeShort === currentTime && !notifiedRef.current.has(todo.id)) {
+                            // Always show in-app toast
+                            addToast(`It's time for: ${todo.title}`, 'info');
+
+                            // Show system notification if allowed
+                            if (Notification.permission === 'granted') {
+                                new Notification('Streakly Reminder 🔔', {
+                                    body: `It's time for: ${todo.title}`,
+                                    icon: '/Streakly02.png'
+                                });
+                            }
+
+                            notifiedRef.current.add(todo.id);
                         }
-
-                        notifiedRef.current.add(todo.id);
                     }
                 }
             });
+
+            // Update App Badge
+            if ('setAppBadge' in navigator) {
+                if (overdueCount > 0) {
+                    navigator.setAppBadge(overdueCount);
+                } else {
+                    navigator.clearAppBadge();
+                }
+            }
+
+            // Update Document Title
+            document.title = overdueCount > 0 ? `(${overdueCount}) Streakly` : 'Streakly — Habit Tracker';
         };
 
         const interval = setInterval(checkNotifications, 10000); // Check every 10s
