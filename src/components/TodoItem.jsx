@@ -84,7 +84,7 @@ export default function TodoItem({ todo, onToggle, onDelete, index = 0 }) {
                     <button
                         onClick={() => onToggle(todo.id, todo.is_completed)}
                         className={`flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${todo.is_completed
-                                ? 'bg-emerald-400 border-emerald-40'
+                                ? 'bg-emerald-400 border-emerald-400'
                                 : 'border-stone-300 hover:border-amber-400 bg-white'
                             }`}
                     >
