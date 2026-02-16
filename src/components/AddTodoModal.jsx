@@ -121,12 +121,15 @@ export default function AddTodoModal({ isOpen, onClose, onAdd }) {
                                     <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">
                                         Date <span className="text-red-400">*</span>
                                     </label>
-                                    <input
-                                        type="date"
-                                        value={date}
-                                        onChange={(e) => setDate(e.target.value)}
-                                        className="w-full px-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50 text-stone-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent transition"
-                                    />
+                                    <div className="relative">
+                                        <CalendarDays size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 pointer-events-none" />
+                                        <input
+                                            type="date"
+                                            value={date}
+                                            onChange={(e) => setDate(e.target.value)}
+                                            className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50 text-stone-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent transition appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                                        />
+                                    </div>
                                 </div>
 
                                 <button
