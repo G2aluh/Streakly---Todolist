@@ -1,9 +1,39 @@
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Flame, LogOut, Zap, Trophy } from 'lucide-react';
+import { Flame, LogOut, Zap, Trophy, Bell, BellOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 export default function StreakHeader({ currentStreak, bestStreak, celebrateStreak }) {
     const { user, signOut } = useAuth();
+    const { addToast } = useToast();
+    const [permission, setPermission] = useState('default');
+
+    useEffect(() => {
+        if ('Notification' in window) {
+            setPermission(Notification.permission);
+        }
+    }, []);
+
+    const requestPermission = async () => {
+        if (!('Notification' in window)) {
+            addToast('Notifications not supported', 'error');
+            return;
+        }
+
+        const result = await Notification.requestPermission();
+        setPermission(result);
+
+        if (result === 'granted') {
+            addToast('Notifications enabled!', 'info');
+            new Notification('Streakly Reminder 🔔', {
+                body: 'Notifications are now enabled!',
+                icon: '/Streakly02.png'
+            });
+        } else {
+            addToast('Notifications denied', 'error');
+        }
+    };
 
     const displayName = user?.email?.split('@')[0] || 'User';
 
@@ -19,13 +49,25 @@ export default function StreakHeader({ currentStreak, bestStreak, celebrateStrea
                         <h1 className="text-xl font-bold text-stone-800">Home</h1>
                     </div>
                 </div>
-                <button
-                    onClick={signOut}
-                    className="p-2.5 rounded-full bg-stone-100 text-stone-400 hover:text-stone-600 hover:bg-stone-200 transition-colors"
-                    title="Sign out"
-                >
-                    <LogOut size={18} />
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={requestPermission}
+                        className={`p-2.5 rounded-full transition-colors ${permission === 'granted'
+                                ? 'bg-amber-100 text-amber-500'
+                                : 'bg-stone-100 text-stone-400 hover:text-stone-600'
+                            }`}
+                        title={permission === 'granted' ? 'Notifications active' : 'Enable notifications'}
+                    >
+                        {permission === 'granted' ? <Bell size={18} /> : <BellOff size={18} />}
+                    </button>
+                    <button
+                        onClick={signOut}
+                        className="p-2.5 rounded-full bg-stone-100 text-stone-400 hover:text-stone-600 hover:bg-stone-200 transition-colors"
+                        title="Sign out"
+                    >
+                        <LogOut size={18} />
+                    </button>
+                </div>
             </div>
 
             {/* Streak Card */}
