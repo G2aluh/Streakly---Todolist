@@ -36,7 +36,7 @@ export default function LoginPage() {
             >
                 {/* Logo */}
                 <div className="flex flex-col items-center mb-10">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-200/50 mb-4">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                         <Flame className="text-white" size={32} />
                     </div>
                     <h1 className="text-2xl font-bold text-stone-800">Streakly</h1>

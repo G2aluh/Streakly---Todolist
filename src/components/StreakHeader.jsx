@@ -12,7 +12,7 @@ export default function StreakHeader({ currentStreak, bestStreak, celebrateStrea
             {/* Top bar */}
             <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md shadow-amber-200/40">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center ">
                         <Zap className="text-white" size={18} />
                     </div>
                     <div>
@@ -30,7 +30,7 @@ export default function StreakHeader({ currentStreak, bestStreak, celebrateStrea
 
             {/* Streak Card */}
             <motion.div
-                className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-400 to-orange-400 p-5 shadow-lg shadow-amber-200/40"
+                className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-400 to-orange-400 p-5 "
                 layout
             >
                 <AnimatePresence>
