@@ -10,7 +10,7 @@ import { useStreak } from '../hooks/useStreak';
 
 export default function DashboardPage() {
     const [modalOpen, setModalOpen] = useState(false);
-    const { groupedTodos, loading, addTodo, toggleTodo, deleteTodo } = useTodos();
+    const { groupedTodos, loading, addTodo, toggleTodo, deleteTodo, deleteGroupTodos } = useTodos();
     const { currentStreak, bestStreak, celebrateStreak, updateStreak } = useStreak();
 
     const handleToggle = useCallback(
@@ -62,6 +62,7 @@ export default function DashboardPage() {
                                 group={group}
                                 onToggle={handleToggle}
                                 onDelete={deleteTodo}
+                                onDeleteGroup={deleteGroupTodos}
                             />
                         ))
                     )}

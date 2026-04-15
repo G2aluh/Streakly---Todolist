@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Trash2, Clock } from 'lucide-react';
+import { Check, Trash2, Clock, Repeat } from 'lucide-react';
 
 // Pastel background colors for todo cards (amber/warm palette)
 const CARD_COLORS = [
@@ -94,6 +94,13 @@ export default function TodoItem({ todo, onToggle, onDelete, index = 0 }) {
                                 }`}>
                                 <Clock size={12} />
                                 <span>{todo.time.slice(0, 5)}</span>
+                            </div>
+                        )}
+                        {todo.repeat_daily && (
+                            <div className={`flex items-center gap-1 text-xs mt-1 ${todo.is_completed ? 'text-stone-300' : 'text-emerald-500'
+                                }`}>
+                                <Repeat size={12} />
+                                <span>Daily</span>
                             </div>
                         )}
                     </div>

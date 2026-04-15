@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { format, isToday, isYesterday, parseISO } from 'date-fns';
+import { format, isToday, isYesterday, parseISO, addDays } from 'date-fns';
 
 export function useTodos() {
     const { user } = useAuth();
@@ -26,7 +26,7 @@ export function useTodos() {
         fetchTodos();
     }, [fetchTodos]);
 
-    const addTodo = async (title, description, date, time) => {
+    const addTodo = async (title, description, date, time, repeatDaily = false) => {
         const { data, error } = await supabase
             .from('todos')
             .insert({
@@ -36,6 +36,7 @@ export function useTodos() {
                 date,
                 time: time || null,
                 is_completed: false,
+                repeat_daily: repeatDaily,
             })
             .select()
             .single();
@@ -47,12 +48,36 @@ export function useTodos() {
 
     const toggleTodo = async (id, currentStatus) => {
         const newStatus = !currentStatus;
+        const todo = todos.find((t) => t.id === id);
+
         const { error } = await supabase
             .from('todos')
             .update({ is_completed: newStatus })
             .eq('id', id);
 
         if (error) throw error;
+
+        if (newStatus && todo?.repeat_daily && todo?.date) {
+            const nextDate = format(addDays(parseISO(todo.date), 1), 'yyyy-MM-dd');
+            const { data: newTodo } = await supabase
+                .from('todos')
+                .insert({
+                    user_id: user.id,
+                    title: todo.title,
+                    description: todo.description,
+                    date: nextDate,
+                    time: todo.time,
+                    is_completed: false,
+                    repeat_daily: true,
+                })
+                .select()
+                .single();
+
+            if (newTodo) {
+                setTodos((prev) => [...prev, newTodo]);
+            }
+        }
+
         setTodos((prev) =>
             prev.map((t) => (t.id === id ? { ...t, is_completed: newStatus } : t))
         );
@@ -63,6 +88,16 @@ export function useTodos() {
         const { error } = await supabase.from('todos').delete().eq('id', id);
         if (error) throw error;
         setTodos((prev) => prev.filter((t) => t.id !== id));
+    };
+
+    const deleteGroupTodos = async (date) => {
+        const { error } = await supabase
+            .from('todos')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('date', date);
+        if (error) throw error;
+        setTodos((prev) => prev.filter((t) => t.date !== date));
     };
 
     // Group todos by date
@@ -92,6 +127,7 @@ export function useTodos() {
         addTodo,
         toggleTodo,
         deleteTodo,
+        deleteGroupTodos,
         refetch: fetchTodos,
     };
 }

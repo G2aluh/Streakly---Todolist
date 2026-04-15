@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CalendarDays, Clock } from 'lucide-react';
+import { X, CalendarDays, Clock, Repeat } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AddTodoModal({ isOpen, onClose, onAdd }) {
@@ -8,6 +8,7 @@ export default function AddTodoModal({ isOpen, onClose, onAdd }) {
     const [description, setDescription] = useState('');
     const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
     const [time, setTime] = useState('');
+    const [repeatDaily, setRepeatDaily] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -26,11 +27,12 @@ export default function AddTodoModal({ isOpen, onClose, onAdd }) {
         setError('');
 
         try {
-            await onAdd(title.trim(), description.trim(), date, time);
+            await onAdd(title.trim(), description.trim(), date, time, repeatDaily);
             setTitle('');
             setDescription('');
             setDate(format(new Date(), 'yyyy-MM-dd'));
             setTime('');
+            setRepeatDaily(false);
             onClose();
         } catch (err) {
             setError(err.message);
@@ -147,6 +149,30 @@ export default function AddTodoModal({ isOpen, onClose, onAdd }) {
                                             className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50 text-stone-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent transition appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                                         />
                                     </div>
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 rounded-2xl border border-stone-200 bg-stone-50">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
+                                            <Repeat size={16} className="text-amber-500" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-stone-700">Repeat Daily</p>
+                                            <p className="text-xs text-stone-400">Task will recreate after completion</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setRepeatDaily(!repeatDaily)}
+                                        className={`relative w-12 h-7 rounded-full transition-colors ${repeatDaily ? 'bg-amber-400' : 'bg-stone-300'
+                                            }`}
+                                    >
+                                        <motion.div
+                                            className="absolute top-1 w-5 h-5 rounded-full bg-white shadow-sm"
+                                            animate={{ left: repeatDaily ? 28 : 4 }}
+                                            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                        />
+                                    </button>
                                 </div>
 
                                 <button

@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import TodoItem from './TodoItem';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Trash2 } from 'lucide-react';
 
-export default function TodoGroup({ group, onToggle, onDelete }) {
+export default function TodoGroup({ group, onToggle, onDelete, onDeleteGroup }) {
     const progressPercent =
         group.totalCount > 0
             ? Math.round((group.completedCount / group.totalCount) * 100)
@@ -28,6 +28,13 @@ export default function TodoGroup({ group, onToggle, onDelete }) {
                     {group.isFullyCompleted && (
                         <CheckCircle size={16} className="text-emerald-400" />
                     )}
+                    <button
+                        onClick={() => onDeleteGroup(group.date)}
+                        className="p-1.5 rounded-lg text-stone-300 hover:text-red-400 hover:bg-red-50 transition-colors"
+                        title="Delete all tasks for this day"
+                    >
+                        <Trash2 size={14} />
+                    </button>
                     <span
                         className={`text-xs font-bold px-3 py-1 rounded-full ${group.isFullyCompleted
                                 ? 'bg-emerald-100 text-emerald-600'
